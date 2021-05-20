@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<h1 style="color: #5e9ca0; text-align: center;"><img src="http://onboard.almondlabs.net/img/airportWiFi.jpg" alt="Airport Logo" width="253" height="157" /></h1>
+<h1 style="color: #5e9ca0; text-align: center;">Welcome to Airport Free Wi-Fi&nbsp;</h1>
+<body>
+<div align = "center">	
+<textarea rows="12" cols="51" readonly>
+These are the terms and condtions for using our Free Wi-Fi Internet access. A bunch of legal jargon that no one but people who have been to lawschool can understand. But basically after you jump through all the hoops and get connected, be aware your traffic is not protected/encoded over the air... At your own risk.
+</textarea>
+</div>
+
+<script>
+  function checkForm(form)
+  {
+    if(!form.terms.checked) {
+      alert("Please indicate that you accept the Terms and Conditions");
+      form.terms.focus();
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<form onsubmit="return checkForm(this);">
+<form>
+<h2 style="text-align: center;"><input name="terms" type="checkbox" /> I accept the <u>Terms and Conditions</u></h2>
+<p style="text-align: center;"><input id="urlText" class="imgUrlText" size="30" type="text" placeholder="Enter Mobile Number:"/>
+ <input type="submit"></p>
+</form>
+
+<head><title>Wireless Internet Service</title>
+<script type="text/javascript">
+function get_param(name) {
+    if (location.href.indexOf("?") >= 0) {
+        var query=location.href.split("?")[1];
+        var params=query.split("&");
+        for (var i = 0; i < params.length; i ++) {
+            value_pair=params[i].split("=");
+            if (value_pair[0] == name)
+                return unescape(value_pair[1]);
+        }
+    }
+    return "";
+}
+</script></head>
+
+<center>
+<h2>Please Enter Passcode and Press Login</h2>
+<script>
+    document.write('<form method=POST action="http://10.1.10.4:9997/SubscriberPortal/hotspotlogin">');
+    document.write('<input type="hidden" name="url" value="'+get_param("url")+'" />');
+    document.write('<input type="hidden" name="proxy" value="'+get_param("proxy")+'" />');
+    document.write('<input type="hidden" name="uip" value="'+get_param("uip")+'" />');
+    document.write('<input type="hidden" name="client_mac" value="'+get_param("client_mac")+'" />');
+    document.write('<input type="hidden" name="username" value="olivier" />');
+</script>
+
+Passcode:<input type="password" name="password" >
+<input type="submit" value="Login">
+</form>
+</center>
+
+</body>
+</html>
