@@ -39,3 +39,11 @@ jobs:
 
           echo "Kubeval test"
           helm template -f values.yaml . | /tmp/k8s-validators/kubeval --ignore-missing-schemas
+      - name: Test wlan-onboard helm chart
+        working-directory: wlan-onboard/helm
+        run: |
+          echo "Helm lint test"
+          helm lint .
+
+          echo "Kubeval test"
+          helm template -f values.yaml . | /tmp/k8s-validators/kubeval --ignore-missing-schemas

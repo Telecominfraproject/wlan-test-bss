@@ -1,0 +1,71 @@
+# System
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+images:
+  onboard:
+    repository: tip-tip-wlan-test-bss-docker-repo.jfrog.io/wlan-onboard
+    tag: latest
+    pullPolicy: IfNotPresent
+    # regcred: VE9GSUxMOlRPRklMTAo= # should be in base64
+
+services:
+  onboard:
+    type: ClusterIP
+    ports:
+      http:
+        servicePort: 80
+        targetPort: 80
+        protocol: TCP
+
+checks:
+  onboard:
+    liveness:
+      httpGet:
+        path: /
+        port: http
+    readiness:
+      httpGet:
+        path: /
+        port: http
+
+ingresses:
+  default: 
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # tls:
+    # - secretName: '{{ include "wlanonboard.fullname" . }}-default-tls' # template may be used
+    #   cert: |
+    #     CERT_HERE_IN_PEM
+    #   key: |
+    #     KEY_HERE_IN_PEM
+    #   hosts:
+    #     - chart-example.local
+    hosts:
+    - chart-example.local
+    paths:
+    - path: /
+      serviceName: onboard
+      servicePort: http
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

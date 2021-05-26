@@ -1,0 +1,111 @@
+name: Build and deploy wlan-onboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'wlan-onboard/**'
+
+env:
+  IMAGE_NAME: wlan-onboard
+  DOCKER_REPO: tip-tip-wlan-test-bss-docker-repo.jfrog.io
+
+  AWS_EKS_NAME: tip-wlan-main
+  AWS_DEFAULT_OUTPUT: json
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CLIENT_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLIENT_KEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        working-directory: wlan-onboard
+        run: |
+          docker build . -f Dockerfile -t image
+      - name: Login to Docker Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login $DOCKER_REPO --username "build-pipeline-wlan-test-bss" --password-stdin
+      - name: Push image
+        run: |
+          IMAGE_ID=$DOCKER_REPO/$IMAGE_NAME
+          TIMESTAMP=$(date +'%Y-%m-%d')
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          VERSION=$GITHUB_REF
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=pr-$(echo $VERSION |  sed -e 's/refs\/pull\///' | sed 's/\/merge//')
+          [[ "${{ github.ref }}" == "refs/heads/"* ]] && VERSION=$(echo $VERSION |  sed -e 's/refs\/heads\///' | tr '/' '-')
+
+          COMMIT_SHA=$GITHUB_SHA
+
+          # Use Docker `latest` tag convention
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          echo TIMESTAMP=$TIMESTAMP
+          echo COMMIT_SHA=$COMMIT_SHA
+
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+          docker tag image $IMAGE_ID:$VERSION-$TIMESTAMP
+          docker push $IMAGE_ID:$VERSION-$TIMESTAMP
+          docker tag image $IMAGE_ID:$VERSION-$TIMESTAMP-$COMMIT_SHA
+          docker push $IMAGE_ID:$VERSION-$TIMESTAMP-$COMMIT_SHA
+
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout helm values repo
+        uses: actions/checkout@v2
+        with:
+          path: toolsmith
+          repository: Telecominfraproject/Toolsmith
+          token: ${{ secrets.PAT_TOKEN }}
+      - name: Fetch kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+      - name: Deploy wlan-onboard
+        run: |
+          TIMESTAMP=$(date +'%Y-%m-%d')
+
+          VERSION=$GITHUB_REF
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=pr-$(echo $VERSION |  sed -e 's/refs\/pull\///' | sed 's/\/merge//')
+          [[ "${{ github.ref }}" == "refs/heads/"* ]] && VERSION=$(echo $VERSION |  sed -e 's/refs\/heads\///' | tr '/' '-')
+
+          COMMIT_SHA=$GITHUB_SHA
+
+          kubectl config current-context
+          kubectl get nodes
+
+          helm upgrade --install onboard wlan-onboard/helm -f toolsmith/helm-values/aws-wlan-onboard.yaml --namespace test-bss --wait --set images.onboard.tag=$VERSION-$TIMESTAMP-$COMMIT_SHA
+
+      - name: Show resource state on deployment failure
+        if: failure()
+        run: |
+          kubectl get pods --namespace test-bss
+          kubectl get services --namespace test-bss
+      - name: Describe pods on deployment failure
+        if: failure()
+        run: |
+          kubectl describe pods --namespace test-bss
+      - name: Describe services on deployment failure
+        if: failure()
+        run: |
+          kubectl describe services --namespace test-bss
+      - name: Rollback Cloud SDK
+        if: failure()
+        working-directory: wlan-helm/tip-wlan
+        run: |
+          helm rollback onboard --namespace test-bss --wait
