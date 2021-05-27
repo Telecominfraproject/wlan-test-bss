@@ -1,0 +1,122 @@
+# System
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+images:
+  freeradius:
+    repository: freeradius/freeradius-server
+    tag: 3.0.21
+    pullPolicy: IfNotPresent
+
+services:
+  freeradius:
+    type: ClusterIP
+    selectors: {}
+    labels: {}
+    annotations: {}
+    ports:
+      auth:
+        servicePort: 1812
+        targetPort: 1812
+        protocol: UDP
+      acct:
+        servicePort: 1813
+        targetPort: 1813
+        protocol: UDP
+
+checks:
+  # This check uses extra site that binds on TCP port 1812 (same as auth port) which is defined below
+  # TCP port is not exposed in service as it may create mixed protocol service that is not supported by LoadBalancer services
+  freeradius:
+    liveness:
+      tcpSocket:
+        port: 1812
+    readiness:
+      tcpSocket:
+        port: 1812
+
+volumes:
+  freeradius:
+    - name: users
+      mountPath: /etc/raddb/users
+      subPath: users
+      # Template below will be rendered in template
+      volumeDefinition: |
+        secret:
+          secretName: {{ include "freeradius.fullname" . }}-configs
+    - name: clients
+      mountPath: /etc/raddb/clients.conf
+      subPath: clients
+      volumeDefinition: |
+        secret:
+          secretName: {{ include "freeradius.fullname" . }}-configs
+    - name: site
+      mountPath: /etc/freeradius/sites-enabled/extra
+      subPath: extraSite
+      volumeDefinition: |
+        secret:
+          secretName: {{ include "freeradius.fullname" . }}-configs
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Application
+public_env_variables: {}
+
+clients_data: |
+  client ipv4 {
+    ipv4addr = 0.0.0.0/0
+    proto = *
+    secret = $ENV{FREERADIUS_SECRET}
+    require_message_authenticator = no
+    nas_type = other
+    limit {
+      max_connections = 16
+      lifetime = 0
+      idle_timeout = 30
+    }
+  }
+  client ipv6 {
+    ipv6addr = ::/0
+    proto = *
+    secret = $ENV{FREERADIUS_SECRET}
+    require_message_authenticator = no
+    nas_type = other
+    limit {
+      max_connections = 16
+      lifetime = 0
+      idle_timeout = 30
+    }
+  }
+
+extra_site: |
+  listen {
+    ipaddr = *
+    port = 1812
+    type = auth+acct
+    proto = tcp
+  }
+
+
+secret_env_variables:
+  FREERADIUS_SECRET: testing123
+
+users_data: |
+  user Cleartext-Password := "password", MS-CHAP-Use-NTLM-Auth := 0
