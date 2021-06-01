@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+
+ <style>
+    img.center {
+        position: relative;
+        left: 40%;
+        right: 40%;
+        margin: auto;
+    }
+</style>
+
+<p id="topLogo"></p>
+
+<script>
+function showLogo() {
+  var x = document.createElement("IMG");
+  x.setAttribute("class", "center");
+  x.setAttribute("src", "airportWiFi.jpg");
+  x.setAttribute("width", "253");
+  x.setAttribute("height", "157");
+  document.body.appendChild(x);
+  x.style.margin = "0 auto";
+  return " ";
+}
+showLogo();
+</script>
+
+<h1 style="color: #5e9ca0; text-align: center;">Welcome to Airport Free Wi-Fi&nbsp;</h1>
+<body>
+<div align = "center">	
+<textarea rows="8" cols="50" readonly>
+These are the terms and condtions for using our Free Wi-Fi Internet access. Followed by complex legal jargon. TLDR is, after you jump through all the hoops and get connected, be aware your traffic is not protected/encoded over the air... At your own risk.
+</textarea>
+</div>
+
+<script>
+  function checkForm(form)
+  {
+    if(!form.terms.checked) {
+      alert("Please indicate that you accept the Terms and Conditions");
+      form.terms.focus();
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<form onsubmit="return checkForm(this);">
+<form>
+<h2 style="text-align: center;"><input name="terms" type="checkbox" /> I accept the <u>Terms and Conditions</u></h2>
+<p style="text-align: center;"><input id="urlText" class="imgUrlText" size="30" type="text" placeholder="Enter Mobile Number:"/>
+ <input type="submit"></p>
+</form>
+
+<head><title>Wireless Internet Service</title>
+<script type="text/javascript">
+function get_param(name) {
+    if (location.href.indexOf("?") >= 0) {
+        var query=location.href.split("?")[1];
+        var params=query.split("&");
+        for (var i = 0; i < params.length; i ++) {
+            value_pair=params[i].split("=");
+            if (value_pair[0] == name)
+                return unescape(value_pair[1]);
+        }
+    }
+    return "";
+}
+</script></head>
+
+<center>
+<h2>Please Enter Passcode and Press Login</h2>
+<script>
+    document.write('<form method=POST action="http://"'get_param("sip")+'":9997/SubscriberPortal/hotspotlogin">');
+    document.write('<input type="hidden" name="url" value="'+get_param("url")+'" />');
+    document.write('<input type="hidden" name="proxy" value="'+get_param("proxy")+'" />');
+    document.write('<input type="hidden" name="uip" value="'+get_param("uip")+'" />');
+    document.write('<input type="hidden" name="client_mac" value="'+get_param("client_mac")+'" />');
+//    document.write('<input type="hidden" name="username" value="olivier" />');
+//    document.write('<input type="hidden" name="password" value="olivier" />');
+</script>
+
+Passcode:<input type="password" name="password" >
+<input type="submit" value="Login">
+</form>
+</center>
+
+</body>
+</html>

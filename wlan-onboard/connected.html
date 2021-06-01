@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+
+ <style>
+    img.center {
+        position: relative;
+        left: 40%;
+        right: 40%;
+        margin: auto;
+    }
+</style>
+
+<p id="topLogo"></p>
+
+<script>
+function showLogo() {
+  var x = document.createElement("IMG");
+  x.setAttribute("class", "center");
+  x.setAttribute("src", "connected.png");
+  x.setAttribute("width", "311");
+  x.setAttribute("height", "229");
+  document.body.appendChild(x);
+  x.style.margin = "0 auto";
+  return " ";
+}
+showLogo();
+</script>
+
+<h1 style="color: #5e9ca0; text-align: center;">You are connected!&nbsp;</h1>
+<h1 style="color: #5e9ca0; text-align: center;">Enjoy 30 min, Unsecure Wi-Fi&nbsp;</h1>

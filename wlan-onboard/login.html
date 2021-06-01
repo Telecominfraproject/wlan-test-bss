@@ -1,0 +1,34 @@
+<html>
+<head><title>Wireless Internet Service</title>
+<script type="text/javascript">
+function get_param(name) {
+ if (location.href.indexOf("?") >= 0) {
+ var query=location.href.split("?")[1];
+ var params=query.split("&");
+ for (var i = 0; i < params.length; i ++) {
+ value_pair=params[i].split("=");
+ if (value_pair[0] == name)
+ return unescape(value_pair[1]);
+ }
+ }
+ return "";
+}
+</script></head>
+<body>
+<center>
+<h2>Wireless Internet Service</h2>
+<script>
+ document.write('<p>AP ZD-Style</p>');
+ document.write('<form method=POST action="http://10.1.10.4:9997/SubscriberPortal/hotspotlogin">');
+document.write('<input type="hidden" name="url" value="'+get_param("url")+'" />');
+document.write('<input type="hidden" name="proxy" value="'+get_param("proxy")+'" />');
+document.write('<input type="hidden" name="uip" value="'+get_param("uip")+'" />');
+document.write('<input type="hidden" name="client_mac" value="'+get_param("client_mac")+'" />');
+document.write('<input type="hidden" name="username" value="olivier" />');
+</script>
+Password:<input type="password" name="password" >
+<input type="submit" value="Login">
+</form>
+</center>
+</body>
+</html>

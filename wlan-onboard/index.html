@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+  var x = navigator.userAgent;
+  var index = x.search("Android");
+  if (index <= 0)
+  {
+     window.location.href = "/ios.html";
+  }
+  else
+  {
+     window.location.href = "/android.html";
+  }
+}
+myFunction();
+</script>
+
+</body>
+</html>

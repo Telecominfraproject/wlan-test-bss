@@ -1,0 +1,79 @@
+{{- $root := . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wlanonboard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "wlanonboard.name" . }}
+    helm.sh/chart: {{ include "wlanonboard.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "wlanonboard.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- with .Values.services.onboard.labels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "wlanonboard.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- with .Values.services.onboard.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+
+      containers:
+
+        - name: onboard
+          image: "{{ .Values.images.onboard.repository }}:{{ .Values.images.onboard.tag }}"
+          imagePullPolicy: {{ .Values.images.onboard.pullPolicy }}
+
+          ports:
+          {{- range $key, $value := .Values.services.onboard.ports }}
+            - name: {{ $key }}
+              containerPort: {{ $value.targetPort }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+
+          {{- if .Values.checks.onboard.liveness }}
+          livenessProbe:
+            {{- toYaml .Values.checks.onboard.liveness | nindent 12 }}
+          {{- end }}
+          {{- if .Values.checks.onboard.readiness }}
+          readinessProbe:
+            {{- toYaml .Values.checks.onboard.readiness | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+
+      imagePullSecrets:
+      {{- range $image, $imageValue := .Values.images }}
+        {{- if $imageValue.regcred }}
+      - name: {{ include "wlanonboard.fullname" $root }}-{{ $image }}-regcred
+        {{- end }}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

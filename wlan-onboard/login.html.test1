@@ -1,0 +1,206 @@
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airport Free WiFi</title>
+</head>
+
+
+	<body>
+	<div id="termsAndConditions" class="container">
+				<div class="col-xs-8 col-sm-7 col-md-5">
+					<div class="text-left">Airport Free WiFi</div>
+				</div>
+			</div>
+
+			<div class="row rkus-spacer-10"></div>
+			<div class="row">
+				<div
+					class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+					<div class="alert alert-info text-center" role="alert">
+						Please read and accept our <strong>Terms and Conditions</strong>.</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class=" col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+					<textarea class="form-control" rows="20" readOnly style="background:white">
+Terms and Conditions
+
+Bunch of legal terms no one but lawyers can comprehend...
+Then even if you actually end up connected to the internet, there is not over the air security
+Have you heard of OpenRoaming and Passpoint?</textarea>
+				</div>
+			</div>
+
+		<div class="row rkus-spacer-10"></div>
+
+		<form role="form" data-toggle="validator" >
+
+			<div class="row">
+				<div
+					class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+					<div class="checkbox" >
+						<label> <input type="checkbox" id="toscheckbox" value="" required>
+							I have read and accept the Terms and Conditions</label>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-xs-offset-6">
+							<button type="Submit" class="btn btn-success width-full disabled" id="btnNext">Next</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+		<div class="row hidden-xs rkus-spacer-10"></div>
+
+	</div>
+
+		<div class="row rkus-spacer-10"></div>
+		<div class="row">
+				<div
+					class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+					<div class="alert alert-success text-center" role="alert">
+						<strong>Terms and Conditions</strong> were accepted</div>
+				</div>
+			</div>
+<div class="row">
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+				<div class="row social-options">
+
+				<form role="form" data-toggle="validator" method="post" name="loginForm">
+						<input type="hidden" id="RequestType" name="RequestType" value="Login" />
+						<input type="hidden" name="uip" value="ENCab68021cc1b53f19bb6673892a41751e" />
+						<input type="hidden" name="client_mac" value="ENC05f5e28353710d2b568520edcf74d8b8e47904f0bb49f2d6" />
+						<input type="hidden" name="wlan" value="2" />
+						<input type="hidden" name="zone" value="" />
+						<input type="hidden" name="thirdPartyZone" value="" />
+
+						<input type="hidden" name="proxy" value="0" />
+						<input type="hidden" name="url" value="https://telecominfraproject.com/" />
+						<input type="hidden" name="GuestUser" value="0" />
+						<input type="hidden" name="AuthenticationType" value="Always Accept" />
+						<input type="hidden" name="LoginFromForm" value="RjAhl7F7QQkjVdsbMfCmoijO1hC9RulQ" />
+						<input type="hidden" name="AppResponseCode" value="220" />
+						<input type="hidden" name="AppErrorMessage" value="null" />
+						<div class="row">
+										<div class="col-xs-6 col-xs-offset-4">
+											<button type="submit" class="btn btn-success width-full disabled" id="signInButton" >Sign In</button>
+										</div>
+									</div>
+								</fieldset>
+						</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row hidden-xs rkus-spacer-10"></div>
+
+	<script>
+var OnboardingConfig = {
+	username : {
+		id : 'UE-Username'
+	},
+	password : {
+		id : 'UE-Password',
+		placeholderDefault : 'Password',
+		placeholderGuest : 'Guest Pass'
+	}
+};
+
+var AuthSetting = {
+	SocialAuthenticate : {
+		facebook : 'FACEBOOK',
+		google : 'GOOGLE',
+		linkedin : 'LINKEDIN'
+	},
+	authServer : {
+		name : 'authenticationServers'
+	},
+	requestType : {
+		name : 'RequestType',
+		value : 'Status'
+	}
+};
+</script>
+
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/bootstrap-3.3.4.min.js"></script>
+<script src="scripts/validator-0.8.1.min.js"></script>
+<script src="scripts/app.js"></script>
+<script src="scripts/pageSetting.js"></script>
+<script src="scripts/R1SupportedDevice.js"></script>
+<script src="scripts/certifiedSamsungDevices.js"></script>
+<script src="scripts/jquery.watermark.min.js"></script>
+
+<script language="javascript">
+
+$(document).ready(function () {
+ /*
+ * Set watermarks on input fields; IE8 & IE9 don't support placeholders
+ * This routine extracts the placeholder text from the HTML input statements and
+ * passes it to the jQuery watermark plugin
+ * so we don't have to separately maintain the watermark text
+ */
+ $('[placeholder]').each(function () {
+ var placeholderText = $(this).attr('placeholder');
+ $(this).watermark(placeholderText);
+ });
+});
+
+	function enableUserPass() {
+		
+			document.getElementById('UE-Username').disabled = false;
+			document.getElementById('UE-Username').focus();
+		
+		document.getElementById('UE-Password').disabled = false;
+		document.getElementById('signInButton').value = 'Sign In';
+	}
+
+	function disableUserPass() {
+		
+			document.getElementById('UE-Username').disabled = true;
+		
+		document.getElementById('UE-Password').disabled = true;
+		document.getElementById('signInButton').value = 'Sign In';
+	}
+
+	function openURL() {
+		
+		var userAgent = window.navigator.userAgent;
+		
+		if (userAgent.indexOf('MSIE ') > 0 || userAgent.indexOf('Trident/') > 0) {
+			
+			$('<form />').attr('target', '_blank').attr('action', '/SubscriberPortal/redirect')
+				.append($('<input />').attr('type', 'hidden').attr('name', 'client_mac').val('ENC05f5e28353710d2b568520edcf74d8b8e47904f0bb49f2d6'))
+				.append($('<input />').attr('type', 'hidden').attr('name', 'uip').val('ENCab68021cc1b53f19bb6673892a41751e'))
+				.append($('<input />').attr('type', 'hidden').attr('name', 'proxy').val('0'))
+				.append($('<input />').attr('type', 'hidden').attr('name', 'url').val('https://telecominfraproject.com/'))
+				.appendTo(document.body).submit().remove();
+		} else {
+			
+			window.open('/SubscriberPortal/redirect?client_mac=ENC05f5e28353710d2b568520edcf74d8b8e47904f0bb49f2d6&uip=ENCab68021cc1b53f19bb6673892a41751e&proxy=0&url=https%3a%2f%2ftelecominfraproject.com%2f');
+		}
+		return false;
+	}
+
+	checkHotspotVersion(function() {
+		setVersion($('#HsVersion'));
+		setVersion($('#HsVersionOAuth'));
+
+		function setVersion(elem) {
+			if(elem !== null) {
+				elem.val('HsR1');
+			}
+		}
+	});
+</script>
+
+</body>
+</html>
+
