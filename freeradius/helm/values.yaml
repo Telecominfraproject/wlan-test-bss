@@ -6,7 +6,7 @@ fullnameOverride: ""
 
 images:
   freeradius:
-    repository: freeradius/freeradius-server
+    repository: tip-tip-wlan-test-bss-docker-repo.jfrog.io/freeradius
     tag: 3.0.21
     pullPolicy: IfNotPresent
 
